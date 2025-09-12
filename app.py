@@ -1,19 +1,28 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
+import mysql.connector
 
 app = Flask(__name__)
 
-# Página inicial
+# Função para conectar ao banco MySQL
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",       # coloque aqui o usuário do MySQL
+        password="",       # se definiu senha, coloque aqui
+        database="petshop"
+    )
+
+# Rota inicial
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Formulário de cadastro de pet
+# Rota para exibir o formulário de cadastro
 @app.route('/cadastrar_pet')
 def cadastrar_pet():
     return render_template('cadastrar_pet.html')
 
-# Rota que recebe os dados do formulário e salva no banco
+# Rota para adicionar pet no banco
 @app.route('/adicionar_pet', methods=['POST'])
 def adicionar_pet():
     nome = request.form['nome']
@@ -21,11 +30,16 @@ def adicionar_pet():
     idade = request.form['idade']
     tutor_id = request.form['tutor_id']
 
-    conn = sqlite3.connect('petshop.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO pets (nome, tipo, idade, tutor_id) VALUES (?, ?, ?, ?)',
-                   (nome, tipo, idade, tutor_id))
+
+    cursor.execute(
+        'INSERT INTO pets (nome, tipo, idade, tutor_id) VALUES (%s, %s, %s, %s)',
+        (nome, tipo, idade, tutor_id)
+    )
+
     conn.commit()
+    cursor.close()
     conn.close()
 
     return redirect('/')
