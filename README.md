@@ -1,4 +1,5 @@
 Petshop Project
+
 🐾 Descrição
 
 Este é um projeto de gerenciamento de petshop desenvolvido para fins acadêmicos. Ele possui funcionalidades de cadastro de pets, tutores e gerenciamento de informações relacionadas. O projeto utiliza Python com Flask no backend, HTML/CSS/JS no frontend e MySQL como banco de dados.
