@@ -107,7 +107,8 @@
     <header>Petshop</header>
 
     <div class="container">
-        <a class="add-pet-btn" href="/cadastrar_pet">Cadastrar Pet</a>
+        <!-- Botão de cadastro corrigido -->
+        <a class="add-pet-btn" href="{{ url_for('novo_pet') }}">Cadastrar Pet</a>
 
         <table>
             <thead>
@@ -128,10 +129,12 @@
                     <td>{{ pet[4] or '-' }}</td>
                     <td>
                         <div class="action-buttons">
-                            <form action="/editar_pet/{{ pet[0] }}" method="GET" style="display:inline;">
+                            <!-- Editar corrigido -->
+                            <form action="{{ url_for('editar', id=pet[0]) }}" method="GET" style="display:inline;">
                                 <button class="action-btn edit-btn" type="submit">Editar</button>
                             </form>
-                            <form action="/excluir_pet/{{ pet[0] }}" method="POST" style="display:inline;">
+                            <!-- Excluir corrigido -->
+                            <form action="{{ url_for('deletar', id=pet[0]) }}" method="POST" style="display:inline;">
                                 <button class="action-btn delete-btn" type="submit">Excluir</button>
                             </form>
                         </div>
