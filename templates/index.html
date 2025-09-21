@@ -9,7 +9,6 @@
             margin: 0;
             padding: 0;
         }
-
         header {
             background-color: #4CAF50;
             color: white;
@@ -19,13 +18,11 @@
             font-weight: bold;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-
         .container {
             max-width: 900px;
             margin: 30px auto;
             padding: 0 20px;
         }
-
         .add-pet-btn {
             display: block;
             width: 180px;
@@ -39,11 +36,9 @@
             border-radius: 8px;
             transition: 0.3s;
         }
-
         .add-pet-btn:hover {
             background-color: #e68a00;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -52,26 +47,21 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-
         th, td {
             padding: 12px 15px;
             text-align: left;
         }
-
         th {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
         tr:hover {
             background-color: #e8f5e9;
         }
-
         .action-btn {
             padding: 6px 10px;
             border: none;
@@ -80,23 +70,18 @@
             font-size: 14px;
             color: white;
         }
-
         .edit-btn {
             background-color: #2196F3;
         }
-
         .edit-btn:hover {
             background-color: #1976D2;
         }
-
         .delete-btn {
             background-color: #f44336;
         }
-
         .delete-btn:hover {
             background-color: #d32f2f;
         }
-
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -105,11 +90,8 @@
 </head>
 <body>
     <header>Petshop</header>
-
     <div class="container">
-        <!-- Botão de cadastro corrigido -->
         <a class="add-pet-btn" href="{{ url_for('novo_pet') }}">Cadastrar Pet</a>
-
         <table>
             <thead>
                 <tr>
@@ -129,11 +111,9 @@
                     <td>{{ pet[4] or '-' }}</td>
                     <td>
                         <div class="action-buttons">
-                            <!-- Editar corrigido -->
                             <form action="{{ url_for('editar', id=pet[0]) }}" method="GET" style="display:inline;">
                                 <button class="action-btn edit-btn" type="submit">Editar</button>
                             </form>
-                            <!-- Excluir corrigido -->
                             <form action="{{ url_for('deletar', id=pet[0]) }}" method="POST" style="display:inline;">
                                 <button class="action-btn delete-btn" type="submit">Excluir</button>
                             </form>

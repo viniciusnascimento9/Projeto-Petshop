@@ -65,22 +65,19 @@
 <body>
     <div class="form-container">
         <h1>Cadastrar Pet</h1>
-        <form action="/adicionar_pet" method="POST">
+        <form action="{{ url_for('salvar_pet') }}" method="POST">
             <label>Nome do Pet</label>
             <input type="text" name="nome" placeholder="Digite o nome do pet" required>
-
             <label>Tipo</label>
             <input type="text" name="tipo" placeholder="Ex: Cachorro, Gato">
-
             <label>Idade</label>
             <input type="text" name="idade" placeholder="Ex: 2 anos, 6 meses">
-
             <label>Nome do Tutor</label>
             <input type="text" name="tutor_nome" placeholder="Digite o nome do tutor" required>
-
             <input type="submit" value="Cadastrar">
         </form>
         <a class="back-link" href="/">Voltar</a>
     </div>
 </body>
 </html>
+

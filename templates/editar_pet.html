@@ -65,19 +65,15 @@
 <body>
     <div class="form-container">
         <h1>Editar Pet</h1>
-        <form action="/atualizar_pet/{{ pet[0] }}" method="POST">
+        <form action="{{ url_for('atualizar', id=pet[0]) }}" method="POST">
             <label>Nome do Pet</label>
             <input type="text" name="nome" value="{{ pet[1] }}" required>
-
             <label>Tipo</label>
             <input type="text" name="tipo" value="{{ pet[2] }}">
-
             <label>Idade</label>
             <input type="text" name="idade" value="{{ pet[3] }}">
-
             <label>Nome do Tutor</label>
             <input type="text" name="tutor_nome" value="{{ pet[4] }}" required>
-
             <input type="submit" value="Atualizar">
         </form>
         <a class="back-link" href="/">Voltar</a>
