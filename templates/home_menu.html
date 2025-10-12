@@ -1,0 +1,65 @@
+<<!DOCTYPE html>
+<html>
+<head>
+    <title>Petshop - Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            font-size: 28px;
+            font-weight: bold;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            padding-top: 120px; /* Espaço confortável entre header e primeiros botões */
+        }
+        .menu-btn {
+            width: 250px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .menu-btn-pet {
+            background-color: #4CAF50;
+        }
+        .menu-btn-pet:hover {
+            background-color: #45a049;
+        }
+        .menu-btn-consulta {
+            background-color: #2196F3;
+        }
+        .menu-btn-consulta:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <header>Petshop</header>
+    <div class="menu-container">
+        <a href="/pets" class="menu-btn menu-btn-pet">Cadastrar Pet</a>
+        <a href="/consultas" class="menu-btn menu-btn-consulta">Agendar Consulta Pet</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consultas Agendadas</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 26px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+        }
+        .back-btn { position: absolute; left: 20px; top: 18px; background-color: white; color: #4CAF50; padding: 6px 10px; border-radius: 5px; text-decoration: none; font-weight: bold;}
+        .container { max-width: 980px; margin: 100px auto 40px; padding: 0 20px; }
+        .add-consulta-btn { display: block; width: 220px; margin: 0 auto 18px auto; padding: 10px; background-color: #ff9800; color: white; text-align: center; border-radius: 8px; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #4CAF50; color: white; font-weight: bold; }
+        tr:hover { background-color: #f7fbf8; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; color: white; font-size: 13px; }
+        .edit-btn { background-color: #2196F3; }
+        .delete-btn { background-color: #f44336; }
+        .action-buttons { display: flex; gap: 8px; }
+    </style>
+</head>
+<body>
+    <header>
+        Consultas Agendadas
+        <a class="back-btn" href="/">← Voltar</a>
+    </header>
+
+    <div class="container">
+        <a class="add-consulta-btn" href="{{ url_for('nova_consulta') }}">Agendar Consulta</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pet</th>
+                    <th>Veterinário</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Observações</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>{{ consulta['pet_nome'] }}</td>
+                    <td>{{ consulta['vet_nome'] or '-' }}</td>
+                    <td>{{ consulta['data_consulta'] }}</td>
+                    <td>{{ consulta['horario'] }}</td>
+                    <td>{{ consulta['observacoes'] or '-' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <form action="{{ url_for('editar_consulta', id=consulta['id']) }}" method="GET" style="display:inline;">
+                                <button class="action-btn edit-btn" type="submit">Editar</button>
+                            </form>
+                            <form action="{{ url_for('deletar_consulta', id=consulta['id']) }}" method="POST" style="display:inline;">
+                                <button class="action-btn delete-btn" type="submit" onclick="return confirm('Tem certeza que quer excluir esta consulta?')">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

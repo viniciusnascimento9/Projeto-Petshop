@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agendar Consulta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #e68a00;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #555;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Agendar Consulta</h1>
+        <form action="{{ url_for('salvar_consulta') }}" method="POST">
+            <label>Nome do Pet</label>
+            <input type="text" name="pet_nome" placeholder="Digite o nome do pet" required>
+
+            <label>Veterinário</label>
+            <input type="text" name="vet_nome" value="Veterinário(a)" readonly>
+
+            <label>Data</label>
+            <input type="date" name="data_consulta" required>
+
+            <label>Horário</label>
+            <input type="time" name="horario" required>
+
+            <label>Observações</label>
+            <input type="text" name="observacoes" placeholder="Observações">
+
+            <input type="submit" value="Agendar">
+        </form>
+        <a class="back-link" href="/consultas">Voltar</a>
+    </div>
+</body>
+</html>
