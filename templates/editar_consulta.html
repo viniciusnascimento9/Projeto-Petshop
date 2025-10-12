@@ -7,7 +7,7 @@
         .form-container { background:#fff; padding:36px 40px; border-radius:10px; box-shadow:0 8px 20px rgba(0,0,0,0.08); width:420px; }
         h1 { text-align:center; margin:0 0 18px; color:#333; }
         label { display:block; margin-top:12px; font-weight:bold; color:#555; }
-        select, input[type="date"], input[type="time"], input[type="text"] { width:100%; padding:10px 12px; margin-top:6px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; font-size:14px; }
+        input[type="date"], input[type="time"], input[type="text"] { width:100%; padding:10px 12px; margin-top:6px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; font-size:14px; }
         input[type="submit"] { width:100%; margin-top:20px; padding:12px; background:#2196F3; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:15px; }
         .back-link { display:block; text-align:center; margin-top:12px; color:#555; text-decoration:none; font-weight:bold; }
     </style>
@@ -17,11 +17,7 @@
         <h1>Editar Consulta</h1>
         <form action="{{ url_for('atualizar_consulta', id=consulta['id']) }}" method="POST">
             <label>Pet</label>
-            <select name="pet_id" required>
-                {% for pet in pets %}
-                <option value="{{ pet[0] }}" {% if pet_id_selecionado is not none and pet[0] == pet_id_selecionado %}selected{% endif %}>{{ pet[1] }}</option>
-                {% endfor %}
-            </select>
+            <input type="text" name="pet_nome" value="{{ consulta['pet_nome'] }}" required>
 
             <label>Veterinário</label>
             <input type="text" name="vet_nome" value="{{ consulta['vet_nome'] }}" required>
