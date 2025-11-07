@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Petshop - Veterinários</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
+        header { background-color: #4CAF50; color: white; text-align: center; padding: 25px 0; font-size: 28px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); position: relative; }
+        .back-btn { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background-color: white; color: #4CAF50; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .add-pet-btn { display: block; width: 220px; margin: 0 auto 20px auto; padding: 12px; background-color: #ff9800; color: white; font-size: 16px; text-align: center; text-decoration: none; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #e8f5e9; }
+        .action-btn { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; color: white; }
+        .edit-btn { background-color: #2196F3; }
+        .edit-btn:hover { background-color: #1976D2; }
+        .delete-btn { background-color: #f44336; }
+        .delete-btn:hover { background-color: #d32f2f; }
+        .action-buttons { display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        Veterinários Cadastrados
+        <a class="back-btn" href="/">← Voltar</a>
+    </header>
+    <div class="container">
+        <a class="add-pet-btn" href="/novo_veterinario">Cadastrar Veterinário</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CRMV</th>
+                    <th>Especialidade</th>
+                    <th>Telefone</th>
+                    <th>E-mail</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vet in veterinarios %}
+                <tr>
+                    <td>{{ vet.nome }}</td>
+                    <td>{{ vet.crmv or '-' }}</td>
+                    <td>{{ vet.especialidade or '-' }}</td>
+                    <td>{{ vet.telefone or '-' }}</td>
+                    <td>{{ vet.email or '-' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <form action="{{ url_for('editar_veterinario', id=vet.id) }}" method="GET">
+                                <button class="action-btn edit-btn" type="submit">Editar</button>
+                            </form>
+                            <form action="{{ url_for('deletar_veterinario', id=vet.id) }}" method="POST">
+                                <button class="action-btn delete-btn" type="submit">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

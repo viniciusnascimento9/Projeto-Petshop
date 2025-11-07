@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastrar Veterinário</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .form-container { background-color: #fff; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; }
+        h1 { text-align: center; color: #333; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        input[type="text"] { width: 100%; padding: 8px 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
+        input[type="submit"] { width: 100%; margin-top: 20px; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #45a049; }
+        .back-link { display: block; text-align: left; margin-top: 10px; color: #555; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Cadastrar Veterinário</h1>
+        <form action="{{ url_for('salvar_veterinario') }}" method="POST">
+            <label>Nome do Veterinário</label>
+            <input type="text" name="nome" placeholder="Digite o nome do veterinário" required>
+            <label>CRMV</label>
+            <input type="text" name="crmv" placeholder="Digite o número do CRMV">
+            <label>Especialidade</label>
+            <input type="text" name="especialidade" placeholder="Ex: Clínica geral, Cirurgia">
+            <label>Telefone</label>
+            <input type="text" name="telefone" placeholder="Digite o telefone de contato">
+            <label>E-mail</label>
+            <input type="text" name="email" placeholder="Digite o e-mail do veterinário">
+            <input type="submit" value="Cadastrar">
+        </form>
+        <a class="back-link" href="/veterinarios">← Voltar</a>
+    </div>
+</body>
+</html>

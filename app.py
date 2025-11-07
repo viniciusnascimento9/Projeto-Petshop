@@ -146,5 +146,76 @@ def deletar_consulta(id):
     cur.close()
     return redirect(url_for('listar_consultas'))
 
+
+
+# ---------------- VETERINÁRIOS ----------------
+@app.route('/veterinarios')
+def listar_veterinarios():
+    cur = db.cursor(dictionary=True)
+    cur.execute("SELECT id, nome, crmv, especialidade, telefone, email FROM vets")
+    veterinarios = cur.fetchall()
+    cur.close()
+    return render_template('listar_veterinarios.html', veterinarios=veterinarios)
+
+
+@app.route('/novo_veterinario')
+def novo_veterinario():
+    return render_template('cadastrar_veterinario.html')
+
+
+@app.route('/salvar_veterinario', methods=['POST'])
+def salvar_veterinario():
+    nome = request.form['nome']
+    crmv = request.form['crmv']
+    especialidade = request.form['especialidade']
+    telefone = request.form['telefone']
+    email = request.form['email']
+
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO vets (nome, crmv, especialidade, telefone, email) VALUES (%s, %s, %s, %s, %s)",
+        (nome, crmv, especialidade, telefone, email)
+    )
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
+@app.route('/editar_veterinario/<int:id>')
+def editar_veterinario(id):
+    cur = db.cursor(dictionary=True)
+    cur.execute("SELECT * FROM vets WHERE id=%s", (id,))
+    veterinario = cur.fetchone()
+    cur.close()
+    return render_template('editar_veterinario.html', veterinario=veterinario)
+
+
+@app.route('/atualizar_veterinario/<int:id>', methods=['POST'])
+def atualizar_veterinario(id):
+    nome = request.form['nome']
+    crmv = request.form['crmv']
+    especialidade = request.form['especialidade']
+    telefone = request.form['telefone']
+    email = request.form['email']
+
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE vets SET nome=%s, crmv=%s, especialidade=%s, telefone=%s, email=%s WHERE id=%s",
+        (nome, crmv, especialidade, telefone, email, id)
+    )
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
+@app.route('/deletar_veterinario/<int:id>', methods=['POST'])
+def deletar_veterinario(id):
+    cur = db.cursor()
+    cur.execute("DELETE FROM vets WHERE id=%s", (id,))
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
