@@ -3,29 +3,36 @@ import mysql.connector
 
 app = Flask(__name__)
 
-db = mysql.connector.connect(
-    host="localhost",
-    database="petshop",
-    user="root",
-    password=""  
-)
+# Função para criar conexão a cada requisição
+def get_db():
+    return mysql.connector.connect(
+        host="localhost",
+        database="petshop",
+        user="root",
+        password=""
+    )
 
 # ---------------- PETS ----------------
 @app.route('/')
 def home():
     return render_template('home_menu.html')
 
+
 @app.route('/pets')
 def listar_pets():
+    db = get_db()
     cur = db.cursor()
     cur.execute("SELECT * FROM pets")
     pets = cur.fetchall()
     cur.close()
+    db.close()
     return render_template('listar_pets.html', pets=pets)
+
 
 @app.route('/novo_pet')
 def novo_pet():
     return render_template('cadastrar_pet.html')
+
 
 @app.route('/salvar_pet', methods=['POST'])
 def salvar_pet():
@@ -33,22 +40,29 @@ def salvar_pet():
     tipo = request.form.get('tipo')
     idade = request.form.get('idade')
     tutor_nome = request.form['tutor_nome']
+
+    db = get_db()
     cur = db.cursor()
     cur.execute(
-        "INSERT INTO pets (nome, tipo, idade, tutor_nome) VALUES (%s,%s,%s,%s)",
+        "INSERT INTO pets (nome, tipo, idade, tutor_nome) VALUES (%s, %s, %s, %s)",
         (nome, tipo, idade, tutor_nome)
     )
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_pets'))
+
 
 @app.route('/editar_pet/<int:id>')
 def editar_pet(id):
+    db = get_db()
     cur = db.cursor()
     cur.execute("SELECT * FROM pets WHERE id=%s", (id,))
     pet = cur.fetchone()
     cur.close()
+    db.close()
     return render_template('editar_pet.html', pet=pet)
+
 
 @app.route('/atualizar_pet/<int:id>', methods=['POST'])
 def atualizar_pet(id):
@@ -56,6 +70,8 @@ def atualizar_pet(id):
     tipo = request.form.get('tipo')
     idade = request.form.get('idade')
     tutor_nome = request.form['tutor_nome']
+
+    db = get_db()
     cur = db.cursor()
     cur.execute(
         "UPDATE pets SET nome=%s, tipo=%s, idade=%s, tutor_nome=%s WHERE id=%s",
@@ -63,26 +79,37 @@ def atualizar_pet(id):
     )
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_pets'))
+
 
 @app.route('/deletar_pet/<int:id>', methods=['POST'])
 def deletar_pet(id):
+    db = get_db()
     cur = db.cursor()
     cur.execute("DELETE FROM pets WHERE id=%s", (id,))
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_pets'))
 
+
 # ---------------- CONSULTAS ----------------
+
 @app.route('/consultas')
 def listar_consultas():
+    db = get_db()
     cur = db.cursor(dictionary=True)
-    cur.execute(
-        "SELECT id, pet_nome, vet_nome, data_consulta, horario, observacoes FROM consultas ORDER BY data_consulta, horario"
-    )
+    cur.execute("""
+        SELECT id, pet_nome, vet_nome, data_consulta, horario, observacoes
+        FROM consultas
+        ORDER BY data_consulta, horario
+    """)
     consultas = cur.fetchall()
     cur.close()
+    db.close()
     return render_template('listar_consultas.html', consultas=consultas)
+
 
 @app.route('/nova_consulta')
 def nova_consulta():
@@ -92,31 +119,40 @@ def nova_consulta():
 @app.route('/salvar_consulta', methods=['POST'])
 def salvar_consulta():
     pet_nome = request.form.get('pet_nome', 'Desconhecido')
+    vet_nome = request.form.get('vet_nome', 'Veterinário(a)')
     data_consulta = request.form['data_consulta']
     horario = request.form['horario']
     observacoes = request.form.get('observacoes', '')
-    vet_nome = request.form.get('vet_nome', 'Veterinário(a)')
 
+    db = get_db()
     cur = db.cursor()
-    cur.execute(
-        "INSERT INTO consultas (pet_nome, vet_nome, data_consulta, horario, observacoes) VALUES (%s,%s,%s,%s,%s)",
-        (pet_nome, vet_nome, data_consulta, horario, observacoes)
-    )
+    cur.execute("""
+        INSERT INTO consultas (pet_nome, vet_nome, data_consulta, horario, observacoes)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (pet_nome, vet_nome, data_consulta, horario, observacoes))
+
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_consultas'))
+
 
 @app.route('/editar_consulta/<int:id>')
 def editar_consulta(id):
+    db = get_db()
     cur = db.cursor(dictionary=True)
-    cur.execute(
-        "SELECT id, pet_nome, vet_nome, data_consulta, horario, observacoes FROM consultas WHERE id=%s",
-        (id,)
-    )
+    cur.execute("""
+        SELECT id, pet_nome, vet_nome, data_consulta, horario, observacoes
+        FROM consultas WHERE id=%s
+    """, (id,))
+    
     consulta = cur.fetchone()
     cur.close()
+    db.close()
+
     if not consulta:
         return redirect(url_for('listar_consultas'))
+
     return render_template('editar_consulta.html', consulta=consulta)
 
 
@@ -128,161 +164,30 @@ def atualizar_consulta(id):
     horario = request.form['horario']
     observacoes = request.form.get('observacoes', '')
 
+    db = get_db()
     cur = db.cursor()
-    cur.execute(
-        "UPDATE consultas SET pet_nome=%s, vet_nome=%s, data_consulta=%s, horario=%s, observacoes=%s WHERE id=%s",
-        (pet_nome, vet_nome, data_consulta, horario, observacoes, id)
-    )
+    cur.execute("""
+        UPDATE consultas
+        SET pet_nome=%s, vet_nome=%s, data_consulta=%s, horario=%s, observacoes=%s
+        WHERE id=%s
+    """, (pet_nome, vet_nome, data_consulta, horario, observacoes, id))
+
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_consultas'))
 
 
 @app.route('/deletar_consulta/<int:id>', methods=['POST'])
 def deletar_consulta(id):
+    db = get_db()
     cur = db.cursor()
     cur.execute("DELETE FROM consultas WHERE id=%s", (id,))
     db.commit()
     cur.close()
+    db.close()
     return redirect(url_for('listar_consultas'))
 
 
-
-# ---------------- VETERINÁRIOS ----------------
-@app.route('/veterinarios')
-def listar_veterinarios():
-    cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nome, crmv, especialidade, telefone, email FROM vets")
-    veterinarios = cur.fetchall()
-    cur.close()
-    return render_template('listar_veterinarios.html', veterinarios=veterinarios)
-
-
-@app.route('/novo_veterinario')
-def novo_veterinario():
-    return render_template('cadastrar_veterinario.html')
-
-
-@app.route('/salvar_veterinario', methods=['POST'])
-def salvar_veterinario():
-    nome = request.form['nome']
-    crmv = request.form['crmv']
-    especialidade = request.form['especialidade']
-    telefone = request.form['telefone']
-    email = request.form['email']
-
-    cur = db.cursor()
-    cur.execute(
-        "INSERT INTO vets (nome, crmv, especialidade, telefone, email) VALUES (%s, %s, %s, %s, %s)",
-        (nome, crmv, especialidade, telefone, email)
-    )
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_veterinarios'))
-
-
-@app.route('/editar_veterinario/<int:id>')
-def editar_veterinario(id):
-    cur = db.cursor(dictionary=True)
-    cur.execute("SELECT * FROM vets WHERE id=%s", (id,))
-    veterinario = cur.fetchone()
-    cur.close()
-    return render_template('editar_veterinario.html', veterinario=veterinario)
-
-
-@app.route('/atualizar_veterinario/<int:id>', methods=['POST'])
-def atualizar_veterinario(id):
-    nome = request.form['nome']
-    crmv = request.form['crmv']
-    especialidade = request.form['especialidade']
-    telefone = request.form['telefone']
-    email = request.form['email']
-
-    cur = db.cursor()
-    cur.execute(
-        "UPDATE vets SET nome=%s, crmv=%s, especialidade=%s, telefone=%s, email=%s WHERE id=%s",
-        (nome, crmv, especialidade, telefone, email, id)
-    )
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_veterinarios'))
-
-
-@app.route('/deletar_veterinario/<int:id>', methods=['POST'])
-def deletar_veterinario(id):
-    cur = db.cursor()
-    cur.execute("DELETE FROM vets WHERE id=%s", (id,))
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_veterinarios'))
-
-# ---------------- TUTORES ----------------
-@app.route('/tutores')
-def listar_tutores():
-    cur = db.cursor()
-    cur.execute("SELECT * FROM tutores")
-    tutores = cur.fetchall()
-    cur.close()
-    return render_template('listar_tutores.html', tutores=tutores)
-
-
-@app.route('/novo_tutor')
-def novo_tutor():
-    return render_template('cadastrar_tutor.html')
-
-
-@app.route('/salvar_tutor', methods=['POST'])
-def salvar_tutor():
-    nome = request.form['nome']
-    telefone = request.form.get('telefone')
-    email = request.form.get('email')
-    endereco = request.form.get('endereco')
-
-    cur = db.cursor()
-    cur.execute(
-        "INSERT INTO tutores (nome, telefone, email, endereco) VALUES (%s, %s, %s, %s)",
-        (nome, telefone, email, endereco)
-    )
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_tutores'))
-
-
-@app.route('/editar_tutor/<int:id>')
-def editar_tutor(id):
-    cur = db.cursor()
-    cur.execute("SELECT * FROM tutores WHERE id=%s", (id,))
-    tutor = cur.fetchone()
-    cur.close()
-    return render_template('editar_tutor.html', tutor=tutor)
-
-
-@app.route('/atualizar_tutor/<int:id>', methods=['POST'])
-def atualizar_tutor(id):
-    nome = request.form['nome']
-    telefone = request.form.get('telefone')
-    email = request.form.get('email')
-    endereco = request.form.get('endereco')
-
-    cur = db.cursor()
-    cur.execute(
-        "UPDATE tutores SET nome=%s, telefone=%s, email=%s, endereco=%s WHERE id=%s",
-        (nome, telefone, email, endereco, id)
-    )
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_tutores'))
-
-
-@app.route('/deletar_tutor/<int:id>', methods=['POST'])
-def deletar_tutor(id):
-    cur = db.cursor()
-    cur.execute("DELETE FROM tutores WHERE id=%s", (id,))
-    db.commit()
-    cur.close()
-    return redirect(url_for('listar_tutores'))
-
-
-
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True)
