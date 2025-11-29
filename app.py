@@ -188,6 +188,166 @@ def deletar_consulta(id):
     db.close()
     return redirect(url_for('listar_consultas'))
 
+# ---------------- VETERINÁRIOS ----------------
+
+@app.route('/veterinarios')
+def listar_veterinarios():
+    db = get_db()
+    cur = db.cursor(dictionary=True)
+    cur.execute("SELECT id, nome, crmv, especialidade, telefone, email FROM vets")
+    veterinarios = cur.fetchall()
+    cur.close()
+    db.close()
+    return render_template('listar_veterinarios.html', veterinarios=veterinarios)
+
+
+@app.route('/novo_veterinario')
+def novo_veterinario():
+    return render_template('cadastrar_veterinario.html')
+
+
+@app.route('/salvar_veterinario', methods=['POST'])
+def salvar_veterinario():
+    nome = request.form['nome']
+    crmv = request.form['crmv']
+    especialidade = request.form['especialidade']
+    telefone = request.form['telefone']
+    email = request.form['email']
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO vets (nome, crmv, especialidade, telefone, email) VALUES (%s, %s, %s, %s, %s)",
+        (nome, crmv, especialidade, telefone, email)
+    )
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
+@app.route('/editar_veterinario/<int:id>')
+def editar_veterinario(id):
+    db = get_db()
+    cur = db.cursor(dictionary=True)
+    cur.execute("SELECT * FROM vets WHERE id=%s", (id,))
+    veterinario = cur.fetchone()
+    cur.close()
+    db.close()
+    return render_template('editar_veterinario.html', veterinario=veterinario)
+
+
+@app.route('/atualizar_veterinario/<int:id>', methods=['POST'])
+def atualizar_veterinario(id):
+    nome = request.form['nome']
+    crmv = request.form['crmv']
+    especialidade = request.form['especialidade']
+    telefone = request.form['telefone']
+    email = request.form['email']
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE vets SET nome=%s, crmv=%s, especialidade=%s, telefone=%s, email=%s WHERE id=%s",
+        (nome, crmv, especialidade, telefone, email, id)
+    )
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
+@app.route('/deletar_veterinario/<int:id>', methods=['POST'])
+def deletar_veterinario(id):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("DELETE FROM vets WHERE id=%s", (id,))
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_veterinarios'))
+
+
+# ---------------- TUTORES ----------------
+
+@app.route('/tutores')
+def listar_tutores():
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM tutores")
+    tutores = cur.fetchall()
+    cur.close()
+    db.close()
+    return render_template('listar_tutores.html', tutores=tutores)
+
+
+@app.route('/novo_tutor')
+def novo_tutor():
+    return render_template('cadastrar_tutor.html')
+
+
+@app.route('/salvar_tutor', methods=['POST'])
+def salvar_tutor():
+    nome = request.form['nome']
+    telefone = request.form['telefone']
+    email = request.form['email']
+    endereco = request.form['endereco']
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("""
+        INSERT INTO tutores (nome, telefone, email, endereco)
+        VALUES (%s, %s, %s, %s)
+    """, (nome, telefone, email, endereco))
+
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_tutores'))
+
+
+@app.route('/editar_tutor/<int:id>')
+def editar_tutor(id):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM tutores WHERE id=%s", (id,))
+    tutor = cur.fetchone()
+    cur.close()
+    db.close()
+    return render_template('editar_tutor.html', tutor=tutor)
+
+
+@app.route('/atualizar_tutor/<int:id>', methods=['POST'])
+def atualizar_tutor(id):
+    nome = request.form['nome']
+    telefone = request.form['telefone']
+    email = request.form['email']
+    endereco = request.form['endereco']
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("""
+        UPDATE tutores
+        SET nome=%s, telefone=%s, email=%s, endereco=%s
+        WHERE id=%s
+    """, (nome, telefone, email, endereco, id))
+
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_tutores'))
+
+
+@app.route('/deletar_tutor/<int:id>', methods=['POST'])
+def deletar_tutor(id):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("DELETE FROM tutores WHERE id=%s", (id,))
+    db.commit()
+    cur.close()
+    db.close()
+    return redirect(url_for('listar_tutores'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
