@@ -216,6 +216,73 @@ def deletar_veterinario(id):
     cur.close()
     return redirect(url_for('listar_veterinarios'))
 
+# ---------------- TUTORES ----------------
+@app.route('/tutores')
+def listar_tutores():
+    cur = db.cursor()
+    cur.execute("SELECT * FROM tutores")
+    tutores = cur.fetchall()
+    cur.close()
+    return render_template('listar_tutores.html', tutores=tutores)
+
+
+@app.route('/novo_tutor')
+def novo_tutor():
+    return render_template('cadastrar_tutor.html')
+
+
+@app.route('/salvar_tutor', methods=['POST'])
+def salvar_tutor():
+    nome = request.form['nome']
+    telefone = request.form.get('telefone')
+    email = request.form.get('email')
+    endereco = request.form.get('endereco')
+
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO tutores (nome, telefone, email, endereco) VALUES (%s, %s, %s, %s)",
+        (nome, telefone, email, endereco)
+    )
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_tutores'))
+
+
+@app.route('/editar_tutor/<int:id>')
+def editar_tutor(id):
+    cur = db.cursor()
+    cur.execute("SELECT * FROM tutores WHERE id=%s", (id,))
+    tutor = cur.fetchone()
+    cur.close()
+    return render_template('editar_tutor.html', tutor=tutor)
+
+
+@app.route('/atualizar_tutor/<int:id>', methods=['POST'])
+def atualizar_tutor(id):
+    nome = request.form['nome']
+    telefone = request.form.get('telefone')
+    email = request.form.get('email')
+    endereco = request.form.get('endereco')
+
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE tutores SET nome=%s, telefone=%s, email=%s, endereco=%s WHERE id=%s",
+        (nome, telefone, email, endereco, id)
+    )
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_tutores'))
+
+
+@app.route('/deletar_tutor/<int:id>', methods=['POST'])
+def deletar_tutor(id):
+    cur = db.cursor()
+    cur.execute("DELETE FROM tutores WHERE id=%s", (id,))
+    db.commit()
+    cur.close()
+    return redirect(url_for('listar_tutores'))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
